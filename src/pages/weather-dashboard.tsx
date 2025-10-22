@@ -1,6 +1,11 @@
+// ...existing code...
+import CurrentWeather from "@/components/CurrentWeather";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import HourlyTemperature from "@/components/ui/hourly-temperature";
 import WeatherSkeleton from "@/components/ui/loading-skeleton";
+import WeatherDetails from "@/components/Weather-details";
+import WeatherForecast from "@/components/weather-forecast";
 import { useGeolocation } from "@/hooks/use-geolocation";
 import {
   useForecastQuery,
@@ -68,17 +73,19 @@ const WeatherDashboard = () => {
   const locationName = locationQuery.data?.[0];
 
   if (weatherQuery.error || forecastQuery.error) {
-    <Alert variant="destructive">
-      <AlertTriangle className="h-4 w-4" />
-      <AlertTitle>Error</AlertTitle>
-      <AlertDescription className="flex flex-col gap-4">
-        <p>Failed to fetch weather data</p>
-        <Button onClick={handleRefresh} variant={"outline"} className="w-fit">
-          <MapPin className="mr-2 h-4 w-4" />
-          Enable Location
-        </Button>
-      </AlertDescription>
-    </Alert>;
+    return (
+      <Alert variant="destructive">
+        <AlertTriangle className="h-4 w-4" />
+        <AlertTitle>Error</AlertTitle>
+        <AlertDescription className="flex flex-col gap-4">
+          <p>Failed to fetch weather data</p>
+          <Button onClick={handleRefresh} variant={"outline"} className="w-fit">
+            <MapPin className="mr-2 h-4 w-4" />
+            Refresh
+          </Button>
+        </AlertDescription>
+      </Alert>
+    );
   }
 
   if (!weatherQuery.data || !forecastQuery.data) {
@@ -106,17 +113,21 @@ const WeatherDashboard = () => {
 
       {/* Current Weather */}
       <div className="grid gap-6">
-        <div>
+        <div className="flex flex-col lg:flex-row gap-4">
           {/* current weather */}
           <CurrentWeather
             data={weatherQuery.data}
             locationName={locationName}
           />
+
           {/* hourly temperature */}
+          <HourlyTemperature data={forecastQuery.data} />
         </div>
-        <div>
+        <div className="grid gap-6 md:grid-cols-2 items-start">
           {/* details */}
+          <WeatherDetails data={weatherQuery.data} />
           {/* forecast */}
+          <WeatherForecast data={forecastQuery.data} />
         </div>
       </div>
     </div>
@@ -124,3 +135,4 @@ const WeatherDashboard = () => {
 };
 
 export default WeatherDashboard;
+// ...existing code...
