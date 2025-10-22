@@ -36,6 +36,7 @@ export function useGeolocation() {
         });
       },
       (error) => {
+        let errorMessage: string;
         switch (error.code) {
           case error.PERMISSION_DENIED:
             errorMessage = "User denied the request for Geolocation.";
@@ -63,7 +64,9 @@ export function useGeolocation() {
     );
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    getLocation();
+  }, []);
 
-  return { locationData, getLocation };
+  return { ...locationData, getLocation };
 }
