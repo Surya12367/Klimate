@@ -2,6 +2,7 @@
 import { useTheme } from "@/context/theme-provider";
 import { Moon, Sun } from "lucide-react";
 import { Link } from "react-router-dom";
+import CitySearch from "../city-search";
 
 const Header = () => {
   const { theme, setTheme } = useTheme();
@@ -22,19 +23,25 @@ const Header = () => {
           </h1>
         </Link>
 
-        {/* Theme toggle - moved inside the container so it sits on the same line */}
-        <button
-          type="button"
-          aria-label="Toggle theme"
-          className="ml-4 flex h-10 w-10 items-center justify-center rounded-md hover:bg-muted/50 transition-colors"
-          onClick={() => setTheme(isDark ? "light" : "dark")}
-        >
-          {isDark ? (
-            <Sun className="h-6 w-6 text-yellow-500 rotate-0 transition-all" />
-          ) : (
-            <Moon className="h-6 w-6 text-blue-500 rotate-0 transition-all" />
-          )}
-        </button>
+        {/* Right side: search + theme toggle */}
+        <div className="flex items-center gap-3">
+          <div className="flex items-center">
+            <CitySearch />
+          </div>
+
+          <button
+            type="button"
+            aria-label="Toggle theme"
+            className="flex h-10 w-10 items-center justify-center rounded-md hover:bg-muted/50 transition-colors"
+            onClick={() => setTheme(isDark ? "light" : "dark")}
+          >
+            {isDark ? (
+              <Sun className="h-6 w-6 text-yellow-500 rotate-0 transition-all" />
+            ) : (
+              <Moon className="h-6 w-6 text-blue-500 rotate-0 transition-all" />
+            )}
+          </button>
+        </div>
       </div>
 
       {/* ...existing code... */}
@@ -43,3 +50,4 @@ const Header = () => {
 };
 
 export default Header;
+// ...existing code...
