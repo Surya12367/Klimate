@@ -21,7 +21,7 @@ export function useSearchHistory() {
   const queryClient = useQueryClient();
 
   const historyQuery = useQuery({
-    queryKey: ["sesrch-history"],
+    queryKey: ["search-history"],
     queryFn: () => history,
     initialData: history,
   });

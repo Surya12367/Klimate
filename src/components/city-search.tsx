@@ -61,9 +61,9 @@ const CitySearch = () => {
           {query.length > 2 && !isLoading && (
             <CommandEmpty>No results found.</CommandEmpty>
           )}
-          {/* <CommandGroup heading="Favourites">
+          <CommandGroup heading="Favourites">
             <CommandItem></CommandItem>
-          </CommandGroup> */}
+          </CommandGroup>
 
           {history.length > 0 && (
             <>

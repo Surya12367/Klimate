@@ -1,5 +1,6 @@
 import CurrentWeather from "@/components/CurrentWeather";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import FavouriteButton from "@/components/ui/favorite-button";
 import HourlyTemperature from "@/components/ui/hourly-temperature";
 import WeatherSkeleton from "@/components/ui/loading-skeleton";
 import WeatherDetails from "@/components/Weather-details";
@@ -40,7 +41,11 @@ const CityPage = () => {
         <h1 className="text-3xl font-bold tracking-tight">
           {params.cityName}, {weatherQuery.data.sys.country}
         </h1>
-        <div className="">{/* favourite Button */}</div>
+        <div className="">
+          <FavouriteButton
+            data={{ ...weatherQuery.data, name: params.cityName }}
+          />
+        </div>
       </div>
 
       <div className="grid gap-6">
