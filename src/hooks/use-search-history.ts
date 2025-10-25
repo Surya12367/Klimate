@@ -9,7 +9,7 @@ interface SearchHistoryItem {
   name: string;
   country: string;
   state?: string;
-  searchedAt: number;
+  searchedAt: string;
 }
 
 export function useSearchHistory() {
@@ -33,7 +33,7 @@ export function useSearchHistory() {
       const newSearch: SearchHistoryItem = {
         ...search,
         id: `${search.lat}-${search.lon}-${Date.now()}`,
-        searchedAt: Date.now(),
+        searchedAt: new Date().toISOString(),
       };
 
       const filteredHistory = history.filter(

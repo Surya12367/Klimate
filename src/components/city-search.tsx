@@ -9,11 +9,12 @@ import {
 } from "./ui/command";
 import { Button } from "./ui/button";
 import { useState } from "react";
-import { Clock, Loader2, Search, XCircle } from "lucide-react";
+import { Clock, Loader2, Search, Star, XCircle } from "lucide-react";
 import { useLocationSerarch } from "@/hooks/use-weather";
 import { useNavigate } from "react-router-dom";
 import { useSearchHistory } from "@/hooks/use-search-history";
 import { format } from "date-fns";
+import { useFavourite } from "@/hooks/use-favourite";
 
 const CitySearch = () => {
   const [open, setOpen] = useState(false);
@@ -21,13 +22,12 @@ const CitySearch = () => {
   const navigate = useNavigate();
 
   const { data: locations, isLoading } = useLocationSerarch(query);
-
   const { history, clearHistory, addToHistory } = useSearchHistory();
 
   const handleSelect = (cityData: string) => {
     const [lat, lon, name, country] = cityData.split("|");
 
-    // Add to Serach History
+    // Add to Search History
     addToHistory.mutate({
       query,
       name,
@@ -40,11 +40,13 @@ const CitySearch = () => {
     navigate(`/city/${name}?lat=${lat}&lon=${lon}`);
   };
 
+  const { favourites } = useFavourite();
+
   return (
     <>
       <Button
-        variant={"outline"}
-        className="relative w-full  text-sm text-muted-foreground sm:pr-12 md:w-40 lg:w-64"
+        variant="outline"
+        className="relative w-full text-sm text-muted-foreground sm:pr-12 md:w-40 lg:w-64"
         onClick={() => setOpen(true)}
       >
         <Search className="mr-2 h-4 w-4" />
@@ -61,9 +63,40 @@ const CitySearch = () => {
           {query.length > 2 && !isLoading && (
             <CommandEmpty>No results found.</CommandEmpty>
           )}
-          <CommandGroup heading="Favourites">
-            <CommandItem></CommandItem>
-          </CommandGroup>
+
+          {favourites.length > 0 && (
+            <CommandGroup heading="Favourites">
+              {favourites.map((location) => {
+                // Safely parse searchedAt
+                // const dateValue = location.searchedAt;
+                // const parsedDate =
+                //   typeof dateValue === "number"
+                //     ? new Date(dateValue)
+                //     : dateValue
+                //     ? new Date(dateValue)
+                //     : null;
+
+                return (
+                  <CommandItem
+                    key={location.id}
+                    value={`${location.lat}|${location.lon}|${location.name}|${location.country}`}
+                    onSelect={handleSelect}
+                  >
+                    <Star className="mr-2 h-4 w-4 text-yellow-500" />
+                    <span>{location.name}</span>
+                    {location.state && (
+                      <span className="text-sm text-muted-foreground">
+                        , {location.state}
+                      </span>
+                    )}
+                    <span className="text-sm text-muted-foreground">
+                      , {location.country}
+                    </span>
+                  </CommandItem>
+                );
+              })}
+            </CommandGroup>
+          )}
 
           {history.length > 0 && (
             <>
@@ -71,7 +104,7 @@ const CitySearch = () => {
               <CommandGroup>
                 <div className="flex items-center justify-between px-2 my-2">
                   <p className="text-xs text-muted-foreground">
-                    Recent Serches
+                    Recent Searches
                   </p>
                   <Button
                     variant="ghost"
@@ -84,6 +117,15 @@ const CitySearch = () => {
                 </div>
 
                 {history.map((location) => {
+                  // Safely parse searchedAt
+                  const dateValue = location.searchedAt;
+                  const parsedDate =
+                    typeof dateValue === "number"
+                      ? new Date(dateValue)
+                      : dateValue
+                      ? new Date(dateValue)
+                      : null;
+
                   return (
                     <CommandItem
                       key={`${location.lat}=${location.lon}`}
@@ -101,7 +143,9 @@ const CitySearch = () => {
                         , {location.country}
                       </span>
                       <span className="ml-auto text-xs text-muted-foreground">
-                        {format(location.searchedAt, "MMM d, h:mm a")}
+                        {parsedDate && !isNaN(parsedDate.getTime())
+                          ? format(parsedDate, "MMM d, h:mm a")
+                          : "N/A"}
                       </span>
                     </CommandItem>
                   );
